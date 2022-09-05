@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AdminController!{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <section>
+        <div class="container">
+            <h1>Welcome Admin✅</h1>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <button style="margin-bottom: auto">
+            <div>
+                <a href="{{ path('app_produit_new') }}"><strong> Product page</strong></a>
+            </div>
+            </button>
+        </div>
+    </section>
+
+
+    <section>
+        <div class="container">
+            <div>
+                <a href="{{ path('app_categorie_new') }}"><strong> Page category</strong></a>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

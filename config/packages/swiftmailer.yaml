@@ -1,0 +1,16 @@
+swiftmailer:
+
+  spool: { type: 'memory' }
+  transport: smtp
+  host: ssl0.ovh.net
+
+  port: 465
+  auth_mode: login
+  username: a.athamnia@smart-it-partner.com
+  password: afna20222395
+  encryption: ssl
+  stream_options:
+    ssl:
+      allow_self_signed: true
+      verify_peer: false
+      verify_peer_name: false

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SendEmailController!{% endblock %}
+
+{% block body %}
+
+    <a   style=" background-color: #f44336;
+            color: white;
+            padding: 14px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;" id="btnlink" href="{{ url('confirm_account',{'token':token}) }}">Activer votre compte</a>
+{% endblock %}
