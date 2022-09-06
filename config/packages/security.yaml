@@ -1,4 +1,6 @@
 security:
+    role_hierarchy:
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
@@ -53,5 +55,3 @@ when@test:
                 cost: 4 # Lowest possible value for bcrypt
                 time_cost: 3 # Lowest possible value for argon
                 memory_cost: 10 # Lowest possible value for argon
-                role_hierarchy:
-                    ROLE_SUPER_ADMIN: ROLE_ADMIN

@@ -53,7 +53,7 @@ class UsersAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($this->urlGenerator->generate('app_produit_new'));
         }
         if (in_array('ROLE_SUPER_ADMIN', $token->getUser()->getRoles())) {
-            return new RedirectResponse($this->urlGenerator->generate('app_categorie_new'));
+            return new RedirectResponse($this->urlGenerator->generate('app_admin'));
         }
         if (in_array('ROLE_USER', $token->getUser()->getRoles())) {
             return new RedirectResponse($this->urlGenerator->generate('app_vue_client'));
