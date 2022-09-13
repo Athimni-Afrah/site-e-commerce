@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+
+
 /**
  * @Route("/produit")
  */
@@ -26,6 +29,21 @@ class ProduitController extends AbstractController
     }
 
     /**
+     * @Route("/pdf/{id}", name="app_pdf")
+     */
+    /*
+    public function generatePdfProduit(Produit $produit = null, PdfService $pdf){
+        $pdfOptions = new Options();
+
+        $html = $this->render('produit/index.html.twig',
+            ['produits' => $produit]);
+            $pdf->showPdfFile($html);
+
+    }
+    */
+
+
+    /**
      * @Route("/new", name="app_produit_new", methods={"GET", "POST"})
      */
     public function new(Request $request, ProduitRepository $produitRepository): Response
@@ -38,9 +56,9 @@ class ProduitController extends AbstractController
 
 //***********  Ajouter un image
             $image = $form->get('image')->getData();
-            if ($image ) {
+            if ($image) {
                 $originalimage = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                $newimageFilename = $originalimage.'-'.uniqid().'.'.$image->guessExtension();
+                $newimageFilename = $originalimage . '-' . uniqid() . '.' . $image->guessExtension();
                 try {
                     $image->move(
                         $this->getParameter('photos_directory'),
@@ -52,23 +70,46 @@ class ProduitController extends AbstractController
 
 
                 $produit->setimage($newimageFilename);
-
-
             }
-            // fin partie gestion des deux fichiers
+//*********** Ajouter un pdf
+                $brochure = $form->get('brochure')->getData();
+
+                if ($brochure) {
+                    $originalbrochure = pathinfo($brochure->getClientOriginalName(), PATHINFO_FILENAME);
+                    $newbrochureFilename = $originalimage . '-' . uniqid() . '.' . $brochure->guessExtension();
+                    try {
+                        $brochure->move(
+                            $this->getParameter('brochures_directory'),
+                            $newimageFilename
+                        );
+
+                    } catch (FileException $e) {
+                    }
+
+
+                    $produit->setBrochure($newbrochureFilename);
+
+
+
+
+
+                }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($produit);
             $entityManager->flush();
 //********
 
-            return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
-        }
 
-        return $this->renderForm('produit/new.html.twig', [
-            'produit' => $produit,
-            'form' => $form,
-        ]);
+                return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
+            }
+
+            return $this->renderForm('produit/new.html.twig', [
+                'produit' => $produit,
+                'form' => $form,
+            ]);
+
     }
+
 
     /**
      * @Route("/{id}", name="app_produit_show", methods={"GET"})
@@ -135,4 +176,5 @@ class ProduitController extends AbstractController
 
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }

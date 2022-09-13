@@ -13,9 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Mailer\Mailer;
-
+//use Symfony\Contracts\Translation\TranslatorInterface;
+//use Symfony\Component\Mailer\Mailer;
 
 
 class RegistrationController extends AbstractController
@@ -34,18 +33,30 @@ class RegistrationController extends AbstractController
         $this->mailer = $mailer;
         $this->userRepository = $userRepository;
     }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    private function generateToken()
+    {
+        return rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+    }
+
     /**
      * @Route("/register", name="app_register")
      */
-
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UsersAuthenticator $authenticator, EntityManagerInterface $entityManager,  \Swift_Mailer $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
+        $email= $user->getEmail();
+        $nom= $user->getFirstname();
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
+            $pwd = $form->get('plainPassword')->getData();
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -55,7 +66,7 @@ class RegistrationController extends AbstractController
             $user->setRoles(array("ROLE_USER"));
 
             $user->setToken($this->generateToken());
-$user->setEnabled(false);
+            $user->setEnabled(false);
            // $Email =" ";
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
@@ -71,7 +82,7 @@ $user->setEnabled(false);
                     $this->renderView(
 
                         'send_email/index.html.twig',
-                        ['token'=>$user->getToken()]
+                        ['token'=>$user->getToken(),'nom'=>$nom, 'pwd'=>$pwd, 'email'=> $email]
                     ),
                     'text/html'
                 );
@@ -101,14 +112,9 @@ $user->setEnabled(false);
      */
     public function confirmAccount(string $token)
     {
-
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['activationToken' => $token]);
-
-
-
-        $user = $this->userRepository->findOneBy(["token" => $token]);
+        $user = $this->userRepository->findOneBy(["Token" => $token]);
         if($user) {
-            $user->setToken(null);
+          //  $user->setToken(null);
             $user->setEnabled(true);
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
@@ -121,14 +127,5 @@ $user->setEnabled(false);
         }
     }
 
-
-    /**
-     * @return string
-     * @throws \Exception
-     */
-    private function generateToken()
-    {
-        return rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
-    }
 
 }

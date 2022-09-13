@@ -63,4 +63,13 @@ class ProduitRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function getTotalProduit()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id) as total')
+
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

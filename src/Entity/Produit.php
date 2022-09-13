@@ -38,6 +38,13 @@ class Produit
      */
     private $categorie;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $brochure;
+
+
+
 
     public function getId(): ?int
     {
@@ -91,6 +98,20 @@ class Produit
 
         return $this;
     }
+
+    public function getBrochure(): ?string
+    {
+        return $this->brochure;
+    }
+
+    public function setBrochure(string $brochure): self
+    {
+        $this->brochure = $brochure;
+
+        return $this;
+    }
+
+
 
 
 

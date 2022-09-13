@@ -26,6 +26,12 @@
 
 
                 </td>
+                <td>
+                    <img src=" {{ asset('uploads/brochures/' ~ produit.brochure) }}" width="15%" />
+
+
+                </td>
+
 
                 <td>
                     <a href="{{ path('app_produit_show', {'id': produit.id}) }}">show</a>
